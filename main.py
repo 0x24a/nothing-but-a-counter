@@ -3,7 +3,7 @@ import fastapi.middleware.cors
 import time
 import threading
 
-app = fastapi.FastAPI()
+app = fastapi.FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 
 app.add_middleware(
     fastapi.middleware.cors.CORSMiddleware,
