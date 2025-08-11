@@ -17,11 +17,11 @@ class Counter:
     def __init__(self, file="count.txt") -> None:
         self.file: str = file
         self._sync_from_file()
-    
+
     def _sync_from_file(self) -> None:
         with open(self.file, "r") as f:
             self.count = int(f.read())
-    
+
     def _sync_to_file(self) -> None:
         with open(self.file, "w+") as f:
             f.write(str(self.count))
@@ -30,10 +30,10 @@ class Counter:
         while 1:
             self._sync_to_file()
             time.sleep(interval)
-    
+
     def start_sync(self, interval: int = 5) -> None:
         threading.Thread(target=self._sync_thread, args=(interval,)).start()
-    
+
     def increase(self) -> int:
         self.count+=1
         return self.count
@@ -42,9 +42,13 @@ counter = Counter()
 counter.start_sync()
 
 @app.get("/")
-async def increase_v1():
+async def increase_v2(full: bool = False):
+    if not full:
+        return counter.increase()
     return {"status": 200, "description": "Nothing but a counter.", "count": counter.increase()}
 
 @app.get("/readonly")
-async def readonly_v1():
+async def readonly_v2(full: bool = False):
+    if not full:
+        return counter.count
     return {"status": 200, "description": "Nothing but a read-only counter.", "count": counter.count}
